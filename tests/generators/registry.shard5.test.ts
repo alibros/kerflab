@@ -1,0 +1,3 @@
+import { registerShard } from './suite';
+
+registerShard(5);

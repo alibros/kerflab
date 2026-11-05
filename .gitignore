@@ -1,0 +1,7 @@
+.superpowers/
+node_modules/
+dist/
+artifacts/
+.DS_Store
+test-results/
+playwright-report/

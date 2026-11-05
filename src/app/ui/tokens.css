@@ -1,0 +1,103 @@
+/*
+ * KerfLab design tokens — "a maker's drafting table".
+ *
+ * Every colour is declared exactly once as light-dark(<Paper>, <Blueprint>).
+ * The active theme is chosen by `color-scheme` on the root (see theme.ts), and any
+ * subtree can be pinned to a theme with `color-scheme: light | dark`.
+ * tests/ui/contrast.test.ts parses this file, so keep colours as 6-digit hex
+ * inside light-dark() for anything that carries meaning.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ── Surfaces ─────────────────────────────────────────────── */
+  --bg: light-dark(#F3EFE6, #0F1420);          /* the sheet: paper / blueprint */
+  --surface: light-dark(#F8F5EE, #151B29);     /* panels laid on the sheet */
+  --well: light-dark(#FFFDF8, #0B0F19);        /* input wells: fresh stock / deep ink */
+  --hover: light-dark(#EBE5D8, #1C2435);       /* quiet hover wash */
+  --press: light-dark(#E2DACA, #232C40);
+
+  /* ── Ink ──────────────────────────────────────────────────── */
+  --ink: light-dark(#1B1F2A, #E8E3D7);         /* ink / chalk */
+  --ink-muted: light-dark(#545864, #A4AABA);   /* secondary text, units, help */
+  --on-ink: light-dark(#F3EFE6, #0F1420);      /* text on inverted (ink) chips */
+
+  /* ── Accent: the laser ───────────────────────────────────── */
+  --accent: light-dark(#E8452C, #E8452C);      /* vermilion — marks, rings, indicators */
+  --accent-ink: light-dark(#B3341C, #FF7A5C);  /* vermilion that is legible as small text */
+  --accent-fill: light-dark(#C63B20, #E8452C); /* primary button fill */
+  --accent-fill-hover: light-dark(#A8301A, #F05A40);
+  --on-accent: light-dark(#FFFDF8, #0F1420);
+  --accent-wash: light-dark(#F7DDD5, #3A1E1D); /* selection / active tint (decorative) */
+  --focus: light-dark(#E8452C, #E8452C);
+
+  /* ── Brass: the rule & calipers ──────────────────────────── */
+  --brass: light-dark(#B08A3E, #B08A3E);       /* ornament only (ticks, rules) */
+  --brass-ink: light-dark(#7A5C1E, #D9B46A);   /* brass that carries meaning */
+
+  /* ── Lines ───────────────────────────────────────────────── */
+  --edge: light-dark(#7E786B, #6B7690);        /* control boundaries (≥3:1) */
+  --rule: light-dark(#D6CEBD, #283149);        /* hairline separators (decorative) */
+  --grid-minor: light-dark(#E9E3D6, #151D2E);
+  --grid-major: light-dark(#E0D8C7, #1D2840);
+
+  /* ── State ───────────────────────────────────────────────── */
+  --danger-ink: light-dark(#A3122F, #FF8FA2);  /* "redline" corrections, crimson ≠ vermilion */
+  --danger-wash: light-dark(#F6DDE1, #3A1A24);
+
+  /* ── Materials (swatches) ────────────────────────────────── */
+  --birch: light-dark(#E4CFA6, #CDB487);
+  --walnut: light-dark(#5E3F2A, #7A5338);
+  --grain-tint: light-dark(#1B1F2A, #E8E3D7);
+
+  /* ── Type ────────────────────────────────────────────────── */
+  --font-ui: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', ui-sans-serif, sans-serif;
+  --font-num: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --fs-2xs: 0.6875rem;  /* 11px  stamps, ticks */
+  --fs-xs: 0.75rem;     /* 12px  labels */
+  --fs-sm: 0.8125rem;   /* 13px  help, mono values */
+  --fs-md: 0.9375rem;   /* 15px  body / controls */
+  --fs-lg: 1.1875rem;   /* 19px  panel titles */
+  --fs-xl: 1.625rem;    /* 26px  section heads */
+  --fs-2xl: 2.75rem;    /* 44px  display */
+  --lh-tight: 1.1;
+  --lh-ui: 1.35;
+  --lh-body: 1.5;
+  --track-label: 0.06em;
+
+  /* ── Space (4px base) ────────────────────────────────────── */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+
+  /* ── Radii: square-ish, deliberate ───────────────────────── */
+  --r-0: 0;
+  --r-1: 2px;  /* controls, chips */
+  --r-2: 4px;  /* buttons, wells */
+  --r-3: 6px;  /* panels, popovers */
+
+  --hairline: 1px;
+  --control-h: 34px;
+
+  /* ── Motion: three durations, one easing ─────────────────── */
+  --dur-1: 120ms; /* hover, press, colour */
+  --dur-2: 160ms; /* indicators, tooltips */
+  --dur-3: 200ms; /* reveals */
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+
+  --shadow-lift: 0 1px 0 light-dark(#E2DACA, #070A11), 0 6px 18px -10px light-dark(#8C7E62, #000000);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-1: 0ms;
+    --dur-2: 0ms;
+    --dur-3: 0ms;
+  }
+}

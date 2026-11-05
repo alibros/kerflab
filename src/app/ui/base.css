@@ -1,0 +1,573 @@
+@import '@fontsource-variable/bricolage-grotesque/standard.css';
+@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';
+@import './tokens.css';
+
+/* ── Theme switching: colours are light-dark(), so only the scheme flips ── */
+:root[data-theme='light'] { color-scheme: light; }
+:root[data-theme='dark'] { color-scheme: dark; }
+:root[data-theme='system'] { color-scheme: light dark; }
+
+/* ── Reset ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+[hidden] { display: none !important; }
+svg { flex: none; display: block; }
+
+/* ── The sheet: paper + hairline drafting grid + grain ─────────────────── */
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  display: flow-root; /* keep child margins inside, so the grid reaches the page end */
+  min-height: 100vh;
+  isolation: isolate;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  line-height: var(--lh-body);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+  background-position: -1px -1px;
+}
+
+/* Fibre grain: SVG turbulence used as an alpha mask, tinted by a token, sat
+   between the sheet and the content so panels stay clean (smoother stock). */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--grain-tint);
+  opacity: 0.07;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.2 -1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.2 -1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::selection { background: var(--accent-wash); color: var(--ink); }
+
+/* ── Focus: one vermilion ring everywhere ──────────────────────────────── */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--r-1);
+}
+
+/* ── Type primitives ───────────────────────────────────────────────────── */
+.bx-display {
+  font-size: var(--fs-2xl);
+  line-height: var(--lh-tight);
+  font-weight: 700;
+  font-stretch: 78%;
+  letter-spacing: -0.02em;
+}
+.bx-h2 {
+  font-size: var(--fs-xl);
+  line-height: var(--lh-tight);
+  font-weight: 650;
+  font-stretch: 84%;
+  letter-spacing: -0.01em;
+}
+.bx-label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  line-height: var(--lh-ui);
+}
+.bx-num, .bx-mono {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings: 'tnum' 1, 'zero' 1;
+}
+.bx-muted { color: var(--ink-muted); }
+a { color: var(--accent-ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+
+.bx-kbd {
+  font-family: var(--font-num);
+  font-size: var(--fs-2xs);
+  line-height: 1;
+  padding: 3px 5px 2px;
+  border: var(--hairline) solid currentColor;
+  border-bottom-width: 2px;
+  border-radius: var(--r-1);
+}
+
+.bx-rule { border: 0; border-top: var(--hairline) solid var(--rule); }
+
+/* Balloon: the numbered circle engineering drawings use to call out items. */
+.bx-balloon {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 22px;
+  block-size: 22px;
+  border: var(--hairline) solid var(--ink);
+  border-radius: 50%;
+  font-family: var(--font-num);
+  font-size: var(--fs-2xs);
+  font-weight: 500;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+
+/* Dimension callout: |←—— 120.0 mm ——→|  (pure CSS, scales to any width). */
+.bx-dim {
+  --dim-color: var(--brass-ink);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--dim-color);
+  font-family: var(--font-num);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums slashed-zero;
+  line-height: 1;
+  white-space: nowrap;
+}
+.bx-dim::before, .bx-dim::after {
+  content: '';
+  flex: 1;
+  height: 9px;
+  background:
+    linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat;
+  border-inline: var(--hairline) solid currentColor;
+}
+.bx-dim::before { border-inline-end: 0; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+.bx-dim::after { border-inline-start: 0; }
+.bx-dim > .bx-dim__unit { color: var(--ink-muted); }
+.bx-dim--accent { --dim-color: var(--accent-ink); }
+
+/* ── Button ────────────────────────────────────────────────────────────── */
+.bx-btn {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  --btn-edge: var(--edge);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-block-size: var(--control-h);
+  padding: 0 var(--s-4);
+  border: var(--hairline) solid var(--btn-edge);
+  border-radius: var(--r-2);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  font-stretch: 92%;
+  line-height: 1;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background-color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease),
+    color var(--dur-1) var(--ease),
+    box-shadow var(--dur-1) var(--ease),
+    transform var(--dur-1) var(--ease);
+}
+.bx-btn:hover { --btn-bg: var(--hover); }
+.bx-btn:active { transform: translateY(1px); --btn-bg: var(--press); }
+.bx-btn:disabled { cursor: not-allowed; opacity: 0.45; transform: none; }
+
+/* Primary: the laser. A darker bottom edge reads as a cut, pressed it closes up. */
+.bx-btn--primary {
+  --btn-bg: var(--accent-fill);
+  --btn-fg: var(--on-accent);
+  --btn-edge: var(--accent-fill);
+  box-shadow: inset 0 -2px 0 rgb(0 0 0 / 0.18);
+}
+.bx-btn--primary:hover { --btn-bg: var(--accent-fill-hover); --btn-edge: var(--accent-fill-hover); }
+.bx-btn--primary:active { --btn-bg: var(--accent-fill-hover); box-shadow: inset 0 1px 0 rgb(0 0 0 / 0.2); }
+
+.bx-btn--secondary { --btn-bg: var(--surface); }
+.bx-btn--quiet { --btn-edge: transparent; padding-inline: var(--s-3); }
+.bx-btn--quiet:hover { --btn-bg: var(--hover); }
+.bx-btn--sm { min-block-size: 28px; padding-inline: var(--s-3); font-size: var(--fs-sm); }
+.bx-btn--icon { padding: 0; inline-size: var(--control-h); }
+.bx-btn--icon.bx-btn--sm { inline-size: 28px; }
+.bx-btn .bx-kbd { margin-inline-start: var(--s-1); }
+
+/* ── Field ─────────────────────────────────────────────────────────────── */
+.bx-field { display: grid; gap: 6px; align-content: start; min-inline-size: 0; }
+.bx-field__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  min-block-size: 22px;
+}
+.bx-field.is-changed .bx-label { color: var(--ink); }
+.bx-field.is-changed .bx-label::after {
+  content: '';
+  display: inline-block;
+  inline-size: 5px;
+  block-size: 5px;
+  margin-inline-start: 6px;
+  vertical-align: 2px;
+  background: var(--accent);
+  transform: rotate(45deg);
+}
+
+.bx-well {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-block-size: var(--control-h);
+  background: var(--well);
+  border: var(--hairline) solid var(--edge);
+  border-radius: var(--r-2);
+  transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
+}
+.bx-well:hover { border-color: var(--ink-muted); }
+.bx-well:focus-within {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 1px var(--focus);
+}
+.bx-well__input {
+  flex: 1;
+  min-inline-size: 0;
+  inline-size: 100%;
+  padding: 0 var(--s-3);
+  border: 0;
+  background: transparent;
+  font-family: var(--font-num);
+  font-size: var(--fs-md);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings: 'tnum' 1, 'zero' 1;
+  letter-spacing: -0.01em;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.bx-well__input:focus-visible { outline: none; }
+.bx-well__input::-webkit-outer-spin-button,
+.bx-well__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.bx-well__unit {
+  display: grid;
+  place-items: center;
+  padding: 0 var(--s-3);
+  border-inline-start: var(--hairline) solid var(--rule);
+  color: var(--ink-muted);
+  font-family: var(--font-num);
+  font-size: var(--fs-sm);
+  user-select: none;
+}
+
+.bx-field__help {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-3);
+  color: var(--ink-muted);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+}
+.bx-field__help:empty { display: none; }
+.bx-field__range {
+  margin-inline-start: auto;
+  font-family: var(--font-num);
+  font-size: var(--fs-2xs);
+  white-space: nowrap;
+  align-self: center;
+}
+.bx-field__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--danger-ink);
+  font-size: var(--fs-sm);
+  font-weight: 550;
+  line-height: var(--lh-ui);
+}
+.bx-field__error:empty { display: none; }
+.bx-field.is-invalid .bx-well {
+  border-color: var(--danger-ink);
+  background:
+    repeating-linear-gradient(-45deg, var(--danger-wash) 0 1px, transparent 1px 6px) right / 28% 100% no-repeat,
+    var(--well);
+}
+.bx-field.is-invalid .bx-well:focus-within { box-shadow: 0 0 0 1px var(--danger-ink); border-color: var(--danger-ink); }
+.bx-field.is-invalid .bx-label { color: var(--danger-ink); }
+.bx-field.is-invalid .bx-label::after { background: var(--danger-ink); }
+
+.bx-reset {
+  display: grid;
+  place-items: center;
+  inline-size: 22px;
+  block-size: 22px;
+  border-radius: var(--r-1);
+  color: var(--accent-ink);
+  transition: background-color var(--dur-1) var(--ease), transform var(--dur-2) var(--ease);
+}
+.bx-reset svg { inline-size: 14px; block-size: 14px; }
+.bx-reset:hover { background: var(--hover); transform: rotate(-40deg); }
+
+/* ── Slider: a steel rule with a laser cursor ──────────────────────────── */
+.bx-slider__row {
+  display: grid;
+  grid-template-columns: 1fr minmax(92px, 7.5rem);
+  gap: var(--s-3);
+  align-items: start;
+}
+.bx-slider__track { position: relative; padding-block-start: 4px; }
+.bx-range {
+  --track: var(--rule);
+  display: block;
+  inline-size: 100%;
+  block-size: 26px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.bx-range:focus-visible { outline-offset: 0; }
+/* Track: filled ink portion + unfilled hairline, plus ruler ticks under it. */
+.bx-range::-webkit-slider-runnable-track {
+  block-size: 26px;
+  background:
+    linear-gradient(var(--ink), var(--ink)) left 13px / var(--fill, 0%) 2px no-repeat,
+    linear-gradient(var(--edge), var(--edge)) left 13px / 100% 1px no-repeat,
+    repeating-linear-gradient(to right, var(--brass) 0 1px, transparent 1px calc((100% - 1px) / var(--divisions, 10))) left 18px / 100% 5px no-repeat,
+    repeating-linear-gradient(to right, var(--brass) 0 1px, transparent 1px calc((100% - 1px) / (var(--divisions, 10) * 2))) left 18px / 100% 3px no-repeat;
+}
+.bx-range::-moz-range-track {
+  block-size: 26px;
+  background:
+    linear-gradient(var(--ink), var(--ink)) left 13px / var(--fill, 0%) 2px no-repeat,
+    linear-gradient(var(--edge), var(--edge)) left 13px / 100% 1px no-repeat,
+    repeating-linear-gradient(to right, var(--brass) 0 1px, transparent 1px calc((100% - 1px) / var(--divisions, 10))) left 18px / 100% 5px no-repeat;
+}
+.bx-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  inline-size: 12px;
+  block-size: 22px;
+  margin-block-start: 2px;
+  border: 0;
+  background:
+    linear-gradient(var(--accent), var(--accent)) center / 2px 100% no-repeat,
+    linear-gradient(var(--accent), var(--accent)) center 3px / 12px 9px no-repeat;
+  clip-path: polygon(0 0, 100% 0, 100% 40%, 58% 60%, 58% 100%, 42% 100%, 42% 60%, 0 40%);
+  transition: transform var(--dur-1) var(--ease);
+}
+.bx-range::-moz-range-thumb {
+  inline-size: 12px;
+  block-size: 22px;
+  border: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(var(--accent), var(--accent)) center / 2px 100% no-repeat,
+    linear-gradient(var(--accent), var(--accent)) center 3px / 12px 9px no-repeat;
+  clip-path: polygon(0 0, 100% 0, 100% 40%, 58% 60%, 58% 100%, 42% 100%, 42% 60%, 0 40%);
+}
+.bx-range:hover::-webkit-slider-thumb,
+.bx-range:active::-webkit-slider-thumb { transform: scaleY(1.08); }
+.bx-slider__scale {
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: 1px;
+  color: var(--ink-muted);
+  font-family: var(--font-num);
+  font-size: var(--fs-2xs);
+  line-height: 1;
+}
+
+/* ── Tabs ──────────────────────────────────────────────────────────────── */
+.bx-tabs__list {
+  position: relative;
+  display: flex;
+  gap: var(--s-1);
+  border-block-end: var(--hairline) solid var(--rule);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.bx-tab {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 10px var(--s-3) 11px;
+  color: var(--ink-muted);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  font-stretch: 90%;
+  white-space: nowrap;
+  border-radius: var(--r-1) var(--r-1) 0 0;
+  transition: color var(--dur-1) var(--ease), background-color var(--dur-1) var(--ease);
+}
+.bx-tab:hover { color: var(--ink); background: var(--hover); }
+.bx-tab[aria-selected='true'] { color: var(--ink); }
+.bx-tab:focus-visible { outline-offset: -2px; }
+.bx-tab__num {
+  font-family: var(--font-num);
+  font-size: var(--fs-2xs);
+  font-weight: 500;
+  color: var(--brass-ink);
+}
+.bx-tab[aria-selected='true'] .bx-tab__num { color: var(--accent-ink); }
+.bx-tabs__indicator {
+  position: absolute;
+  inset-block-end: -1px;
+  inset-inline-start: 0;
+  block-size: 2px;
+  inline-size: 0;
+  background: var(--accent);
+  transition: transform var(--dur-2) var(--ease), width var(--dur-2) var(--ease);
+  pointer-events: none;
+}
+.bx-tabs__panel { padding-block-start: var(--s-4); animation: bx-fade var(--dur-2) var(--ease); }
+.bx-tabs__panel:focus-visible { outline-offset: 4px; }
+
+/* ── Tooltip: a drafting note on a leader line ─────────────────────────── */
+.bx-tooltip {
+  --leader-x: 50%;
+  position: fixed;
+  z-index: 100;
+  max-inline-size: 280px;
+  padding: var(--s-2) var(--s-3);
+  background: var(--ink);
+  color: var(--on-ink);
+  border-radius: var(--r-1);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+  box-shadow: var(--shadow-lift);
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
+  pointer-events: auto;
+}
+.bx-tooltip[popover] { margin: 0; inset: auto; border: 0; overflow: visible; }
+.bx-tooltip[data-placement='bottom'] { transform: translateY(-3px); }
+.bx-tooltip.is-open { opacity: 1; transform: none; }
+.bx-tooltip::before {
+  /* leader line */
+  content: '';
+  position: absolute;
+  inset-inline-start: var(--leader-x);
+  inline-size: 1px;
+  block-size: 8px;
+  background: var(--ink);
+}
+.bx-tooltip::after {
+  /* leader terminus dot */
+  content: '';
+  position: absolute;
+  inset-inline-start: calc(var(--leader-x) - 2px);
+  inline-size: 5px;
+  block-size: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.bx-tooltip[data-placement='top']::before { inset-block-start: 100%; }
+.bx-tooltip[data-placement='top']::after { inset-block-start: calc(100% + 7px); }
+.bx-tooltip[data-placement='bottom']::before { inset-block-end: 100%; }
+.bx-tooltip[data-placement='bottom']::after { inset-block-end: calc(100% + 7px); }
+.bx-tooltip .bx-mono { color: inherit; }
+.bx-tooltip__title { display: block; font-weight: 650; margin-block-end: 2px; }
+.bx-tooltip svg { margin-block: var(--s-2) var(--s-1); }
+
+/* ── Panel (collapsible group) ─────────────────────────────────────────── */
+.bx-panel {
+  background: var(--surface);
+  border: var(--hairline) solid var(--rule);
+  border-radius: var(--r-3);
+}
+.bx-panel + .bx-panel { margin-block-start: var(--s-2); }
+.bx-panel__head { font: inherit; }
+.bx-panel__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  inline-size: 100%;
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-3);
+  text-align: start;
+  transition: background-color var(--dur-1) var(--ease);
+}
+.bx-panel__trigger:hover { background: var(--hover); }
+.bx-panel__trigger:focus-visible { outline-offset: -2px; border-radius: var(--r-3); }
+.bx-panel__title {
+  font-size: var(--fs-lg);
+  font-weight: 650;
+  font-stretch: 86%;
+  letter-spacing: -0.005em;
+  line-height: var(--lh-tight);
+}
+.bx-panel__summary {
+  margin-inline-start: auto;
+  color: var(--ink-muted);
+  font-family: var(--font-num);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-inline-size: 0;
+  opacity: 0;
+  visibility: hidden; /* open: the values are on show, so drop the summary from the a11y tree too */
+  transition: opacity var(--dur-2) var(--ease), visibility var(--dur-2) var(--ease);
+}
+.bx-panel:not(.is-open) .bx-panel__summary { opacity: 1; visibility: visible; }
+.bx-panel__chev {
+  display: grid;
+  place-items: center;
+  color: var(--ink-muted);
+  transition: transform var(--dur-3) var(--ease);
+}
+.bx-panel.is-open .bx-panel__chev { transform: rotate(180deg); }
+.bx-panel__body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-3) var(--ease);
+}
+.bx-panel.is-open .bx-panel__body { grid-template-rows: 1fr; }
+.bx-panel__inner {
+  overflow: hidden;
+  min-block-size: 0;
+}
+.bx-panel__content {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-4);
+  border-block-start: var(--hairline) solid var(--rule);
+}
+.bx-stack { display: grid; gap: var(--s-4); }
+
+/* ── Segmented control (theme switch) ──────────────────────────────────── */
+.bx-segment {
+  display: inline-flex;
+  padding: 2px;
+  gap: 2px;
+  background: var(--surface);
+  border: var(--hairline) solid var(--edge);
+  border-radius: var(--r-2);
+}
+.bx-segment__opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: var(--r-1);
+  color: var(--ink-muted);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  transition: background-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+.bx-segment__opt:hover { color: var(--ink); background: var(--hover); }
+.bx-segment__opt[aria-checked='true'] { background: var(--ink); color: var(--on-ink); }
+.bx-segment__opt svg { inline-size: 14px; block-size: 14px; }

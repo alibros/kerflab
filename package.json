@@ -1,0 +1,55 @@
+{
+  "name": "kerflab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "KerfLab: laser-cut box, tray, gear and jig generators in the browser (a reimagining of boxes.py)",
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://github.com/alibros/kerflab#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alibros/kerflab.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alibros/kerflab/issues"
+  },
+  "author": "Ali Bross (https://forestofrods.com)",
+  "keywords": [
+    "laser-cutting",
+    "cnc",
+    "box-generator",
+    "finger-joints",
+    "parametric",
+    "boxes.py",
+    "svg",
+    "dxf",
+    "three.js"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "check": "tsc --noEmit && eslint . --max-warnings 0 && vitest run && vite build"
+  },
+  "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.6",
+    "@types/three": "^0.187.0",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.1",
+    "vite": "^8.3.5",
+    "vitest": "^5.1.0"
+  }
+}
