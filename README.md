@@ -6,6 +6,8 @@ Pick a generator, nudge the numbers, spin it around in 3D, then grab a cut file 
 laser. No install, no account, no backend: it's a static site, and your design lives in the URL so
 you can share it with a link.
 
+**[Try it live at alibros.github.io/kerflab](https://alibros.github.io/kerflab/)**
+
 ![KerfLab showing a pirate chest in 3D, with its settings on the left](docs/images/hero.jpg)
 
 ## What can it make?

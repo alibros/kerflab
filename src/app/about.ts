@@ -6,6 +6,8 @@ export const ABOUT = {
   name: 'KerfLab',
   /** Public source repository (the About dialog hides the link when this is empty). */
   repoUrl: 'https://github.com/alibros/kerflab',
+  /** Where the app is hosted (GitHub Pages, deployed from main). */
+  siteUrl: 'https://alibros.github.io/kerflab/',
   author: { name: 'Ali Bross', url: 'https://forestofrods.com' },
   boxesPy: {
     repo: 'https://github.com/florianfesti/boxes',

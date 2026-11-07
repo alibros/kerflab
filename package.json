@@ -4,7 +4,7 @@
   "private": true,
   "description": "KerfLab: laser-cut box, tray, gear and jig generators in the browser (a reimagining of boxes.py)",
   "license": "GPL-3.0-or-later",
-  "homepage": "https://github.com/alibros/kerflab#readme",
+  "homepage": "https://alibros.github.io/kerflab/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alibros/kerflab.git"
